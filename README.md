@@ -106,7 +106,7 @@ https://emarat-app-clone.vercel.app
 Redirect URLs
 https://emarat-app-clone.vercel.app/auth/callback
 http://localhost:*/auth/callback
-nawarewards://auth/callback
+nawarewards://**
 ```
 
 Add intentionally shared Vercel preview callback URLs separately when preview
