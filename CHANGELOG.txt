@@ -1,0 +1,176 @@
+NAWA REWARDS MVP - PROJECT CHANGELOG
+Last updated: June 15, 2026
+
+PROJECT FOUNDATION
+- Built an original loyalty and rewards MVP named Nawa Rewards.
+- Used the supplied screenshots only as broad visual inspiration for mobile
+  layout, spacing, navigation, cards, QR flows, menu structure, and rewards
+  screens.
+- Created an original name, logo mark, color palette, typography treatment,
+  content, components, and visual assets.
+- Implemented the app with Expo SDK 54, React Native, TypeScript, React 19,
+  and Expo Router typed routes.
+- Added reusable screen, navigation, card, loading, error, offline, segmented
+  control, transaction, and branding components.
+- Added light-theme mobile layouts with responsive web support.
+
+MEMBER EXPERIENCE
+- Added a home dashboard with member greeting, tier card, points balance,
+  AED equivalent, member number, promotions, and milestone progress.
+- Added a rewards screen with earning-rate information and links to
+  transactions and partners.
+- Added a searchable partner directory sourced from Supabase merchants.
+- Added transaction history sourced from Supabase transactions.
+- Added a profile screen showing live membership details.
+- Added a menu screen and protected application navigation.
+- Added loading, empty, retry, and error states across data-driven screens.
+
+AUTHENTICATION
+- Integrated Supabase email and password registration.
+- Integrated Supabase email and password login and logout.
+- Added email confirmation handling after registration.
+- Added password recovery and password update screens.
+- Added PKCE callback and deep-link handling for web and native flows.
+- Added authenticated route protection and session restoration.
+- Added Secure Store-backed session persistence on native platforms.
+- Kept browser session persistence on web through the Supabase client.
+- Added fail-closed behavior when Supabase environment variables are absent.
+- Added an explicit opt-in demo mode for local UI demonstrations only.
+- Added user-friendly authentication error mapping.
+
+SUPABASE CLIENT AND DATA ACCESS
+- Added lib/supabase.ts using @supabase/supabase-js,
+  react-native-url-polyfill, and expo-secure-store.
+- Configured EXPO_PUBLIC_SUPABASE_URL and
+  EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY.
+- No service_role key, secret key, or database password is stored in the app.
+- Added a network request timeout and auth token auto-refresh handling.
+- Added typed profile, wallet, merchant, transaction, merchant assignment,
+  redemption token, and RPC result models.
+- Added authenticated profile and wallet fetching.
+- Added active merchant and transaction fetching.
+- Added merchant assignment fetching for staff accounts.
+- Kept wallet data in memory for display only.
+- The client never directly updates wallets or inserts transactions.
+
+QR AND POINTS SECURITY
+- Added a static Earn QR containing only the authenticated member_code.
+- Added one-time redemption QR generation through
+  create_redemption_token(p_points).
+- Added a five-minute redemption countdown and automatic expiry UI.
+- Cleared active redemption codes when the app leaves the foreground.
+- Added a camera-based protected merchant scanner.
+- Added merchant-context selection for staff assigned to multiple merchants.
+- Added server-validated earning through earn_points(...).
+- Added server-validated redemption through redeem_token(...).
+- Added cryptographically random idempotency keys with expo-crypto.
+- Kept point calculation, balance updates, transaction creation, token
+  validation, and redemption deductions inside database functions.
+
+DATABASE AND RLS SECURITY
+- Integrated the profiles, wallets, merchants, merchant_staff, transactions,
+  redemption_tokens, and audit_logs data model.
+- Enabled RLS-safe reads for members and merchant staff.
+- Limited profile updates to the authenticated user's full name.
+- Restricted merchant visibility to active merchants.
+- Restricted transactions to the owning member or assigned merchant staff.
+- Added the auth.users trigger that creates a profile and zero-balance wallet.
+- Added atomic earn and redeem functions with authorization checks, row locks,
+  idempotency handling, balance validation, and audit logging.
+- Revoked anonymous execution from all privileged functions.
+- Allowed authenticated execution only for the three intended mobile RPCs:
+  create_redemption_token, earn_points, and redeem_token.
+- Removed client execution access from internal trigger and helper functions.
+- Optimized RLS policies to evaluate auth.uid() once per statement.
+- Added indexes for merchant assignments, redemption-token relationships, and
+  transaction member/merchant lookups.
+- Ran Supabase security and performance advisors after database hardening.
+- Left audit_logs intentionally inaccessible to mobile clients.
+
+SIGNUP FIX - JUNE 15, 2026
+- Diagnosed production registration failures through Supabase Auth and
+  Postgres logs.
+- Found that pgcrypto was installed in the extensions schema while the signup
+  trigger searched only the public schema.
+- Fixed handle_new_user() to call extensions.gen_random_bytes explicitly.
+- Locked the trigger function to an empty search_path.
+- Applied the same explicit pgcrypto resolution to redemption token generation
+  and token hashing through extensions.gen_random_bytes and extensions.digest.
+- Added a migration reproducing the live signup and pgcrypto fix.
+- Improved messages for invalid email addresses and database-side account
+  setup failures.
+- Verified registration through the production web form with a randomized
+  test account.
+- Verified that signup created the Auth user, profile, unique member_code, and
+  zero-balance wallet.
+- Deleted the disposable verification account and confirmed no test user
+  remained.
+
+CONNECTIVITY AND RELIABILITY
+- Added NetInfo-based connectivity monitoring.
+- Added a persistent offline banner.
+- Prevented server mutations while offline.
+- Added explicit offline, timeout, validation, auth, server, and unknown error
+  handling.
+- Added retry controls for member, transaction, and merchant data.
+- Added bounded query limits and parallel profile/wallet loading.
+- Added foreground-aware Supabase auth token refresh on native platforms.
+
+ANDROID AND NATIVE READINESS
+- Configured Android package com.nawarewards.app and version code 1.
+- Enabled edge-to-edge layout and keyboard resize behavior.
+- Added Expo Camera permission text and disabled Android audio recording.
+- Added Expo Secure Store and camera plugins.
+- Added EAS development, preview APK, and production Android App Bundle
+  profiles.
+- Enabled production auto-incrementing through EAS.
+- Added npm scripts for Android preview and production builds.
+
+WEB AND VERCEL DEPLOYMENT
+- Configured Expo Router static web output.
+- Added a Vercel build using npm run build:web with dist as the output.
+- Added clean URLs and production security headers:
+  X-Content-Type-Options, X-Frame-Options, Referrer-Policy, and
+  Permissions-Policy.
+- Connected the GitHub repository nasal-thanseer/EmaratAppClone to Vercel.
+- Added encrypted Vercel production environment variables for the Supabase
+  project URL, publishable key, and disabled demo mode.
+- Deployed the production app at:
+  https://emarat-app-clone.vercel.app
+- Verified direct route loading for registration, password recovery, and
+  partner pages.
+- Verified the production login and registration pages in a browser.
+- Verified that the production browser console and Vercel runtime logs were
+  free of application errors after deployment.
+
+SOURCE CONTROL AND DOCUMENTATION
+- Added README documentation for setup, security flows, Android builds,
+  Vercel deployment, Supabase configuration, and remaining production work.
+- Added a Supabase backend contract document.
+- Removed the unnecessary .env.example file.
+- Ignored local .env values, Vercel metadata, build output, dependencies, and
+  other machine-specific files.
+- Added reproducible Supabase migrations for RPC/RLS hardening and the signup
+  fix.
+- Committed and pushed the production-ready MVP and database hardening to the
+  GitHub main branch.
+
+VERIFICATION COMPLETED
+- TypeScript type checking passed.
+- Expo dependency compatibility checks passed.
+- Expo Doctor passed all checks.
+- Static Expo web export completed successfully.
+- Vercel production builds completed successfully.
+- Production routes returned HTTP 200.
+- Supabase project health checks passed.
+- Anonymous privileged RPC execution was verified as denied.
+- Authenticated access remained enabled only for intended secure RPCs.
+- Production signup and automatic profile/wallet provisioning were verified.
+
+KNOWN FOLLOW-UP ITEMS
+- Configure and test custom SMTP for dependable production email delivery.
+- Confirm Supabase Site URL and all production/native redirect URLs.
+- Add CAPTCHA and API/device-level rate limiting for signup and sensitive RPCs.
+- Add formal staging integration tests and production observability.
+- Complete stakeholder review of rewards conversion, refunds, privacy,
+  retention, and legal requirements before a public launch.
