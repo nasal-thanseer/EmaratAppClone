@@ -111,6 +111,15 @@ SIGNUP FIX - JUNE 15, 2026
   window instead of displaying the generic authentication error.
 - Confirmed that the later failure was mail-provider throttling and not a
   recurrence of the database trigger failure.
+- Diagnosed successful production signups whose confirmation links incorrectly
+  fell back to http://localhost:3000.
+- Added a dedicated /auth/callback route that securely exchanges Supabase PKCE
+  authorization codes before entering the app.
+- Made web confirmation and password-recovery redirects use the current
+  deployed origin instead of a development localhost URL.
+- Added a strict callback destination allowlist to prevent open redirects.
+- Disabled duplicate automatic URL session detection so each PKCE code is
+  exchanged exactly once by the callback screen.
 
 CONNECTIVITY AND RELIABILITY
 - Added NetInfo-based connectivity monitoring.

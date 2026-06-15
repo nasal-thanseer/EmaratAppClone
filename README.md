@@ -97,7 +97,20 @@ EXPO_PUBLIC_ENABLE_DEMO_MODE=false
 
 4. Deploy. No SPA rewrite is required because Expo generates a static HTML file for every route.
 
-Add the Vercel production and preview URLs to Supabase Authentication > URL Configuration. Set the production URL as the Site URL and add the callback paths used by registration and password recovery to the Redirect URLs.
+In Supabase Authentication > URL Configuration, set:
+
+```text
+Site URL
+https://emarat-app-clone.vercel.app
+
+Redirect URLs
+https://emarat-app-clone.vercel.app/auth/callback
+http://localhost:*/auth/callback
+nawarewards://auth/callback
+```
+
+Add intentionally shared Vercel preview callback URLs separately when preview
+authentication is required. Do not use a broad production wildcard.
 
 ## Project map
 

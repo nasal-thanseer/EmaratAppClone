@@ -1,7 +1,7 @@
 import { toAppError } from "@/lib/errors";
+import { createAuthCallbackUrl } from "@/lib/authRedirect";
 import { configurationError, isDemoMode, requireSupabase, supabase } from "@/lib/supabase";
 import { Session } from "@supabase/supabase-js";
-import * as Linking from "expo-linking";
 import { Href, router } from "expo-router";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
@@ -58,21 +58,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
       if (event === "PASSWORD_RECOVERY") router.replace("/reset-password" as Href);
     });
 
-    async function handleDeepLink(url: string | null) {
-      if (!url) return;
-      const parsed = Linking.parse(url);
-      const code = typeof parsed.queryParams?.code === "string" ? parsed.queryParams.code : null;
-      if (code) {
-        const { error } = await supabase!.auth.exchangeCodeForSession(code);
-        if (error && __DEV__) console.warn("Auth callback failed", error.message);
-      }
-    }
-    void Linking.getInitialURL().then(handleDeepLink);
-    const linkingSubscription = Linking.addEventListener("url", ({ url }) => { void handleDeepLink(url); });
     return () => {
       mounted = false;
       data.subscription.unsubscribe();
-      linkingSubscription.remove();
     };
   }, []);
 
@@ -100,7 +88,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         password,
         options: {
           data: { full_name: fullName },
-          emailRedirectTo: Linking.createURL("/login")
+          emailRedirectTo: createAuthCallbackUrl("/(tabs)")
         }
       });
       if (error) throw error;
@@ -114,7 +102,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     if (isDemoMode) return;
     try {
       const { error } = await requireSupabase().auth.resetPasswordForEmail(email, {
-        redirectTo: Linking.createURL("/reset-password")
+        redirectTo: createAuthCallbackUrl("/reset-password")
       });
       if (error) throw error;
     } catch (error) {

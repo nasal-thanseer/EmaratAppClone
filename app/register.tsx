@@ -20,7 +20,7 @@ export default function RegisterScreen() {
     setLoading(true); setError("");
     try {
       const result = await signUp(name.trim(), email.trim(), password);
-      if (result.needsEmailConfirmation) setNotice("Account created. Confirm the email we sent before signing in.");
+      if (result.needsEmailConfirmation) setNotice("Account created. Use the confirmation link in your email to finish signing in.");
       else router.replace("/(tabs)");
     }
     catch (e) { setError(e instanceof Error ? e.message : "Unable to create account."); }
