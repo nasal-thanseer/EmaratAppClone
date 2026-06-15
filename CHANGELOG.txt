@@ -105,6 +105,12 @@ SIGNUP FIX - JUNE 15, 2026
   zero-balance wallet.
 - Deleted the disposable verification account and confirmed no test user
   remained.
+- Diagnosed later signup attempts returning HTTP 429 from Supabase's built-in
+  confirmation-email provider after its demonstration quota was exhausted.
+- Added a specific confirmation-email rate-limit message with a one-hour retry
+  window instead of displaying the generic authentication error.
+- Confirmed that the later failure was mail-provider throttling and not a
+  recurrence of the database trigger failure.
 
 CONNECTIVITY AND RELIABILITY
 - Added NetInfo-based connectivity monitoring.

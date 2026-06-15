@@ -36,6 +36,9 @@ function authMessage(message: string) {
   if (/invalid login credentials/i.test(message)) return "Email or password is incorrect.";
   if (/email not confirmed/i.test(message)) return "Confirm your email before signing in.";
   if (/user already registered/i.test(message)) return "An account already exists for this email.";
+  if (/email rate limit|over_email_send_rate_limit|rate limit exceeded/i.test(message)) {
+    return "Confirmation emails are temporarily rate-limited. Please wait up to one hour before trying again.";
+  }
   if (/email address.*invalid|invalid email/i.test(message)) return "Enter a valid, deliverable email address.";
   if (/database error saving new user/i.test(message)) return "Account setup is temporarily unavailable. Please try again shortly.";
   if (/password/i.test(message)) return "The password does not meet the security requirements.";
