@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "scheme": "nawarewards",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "plugins": [
       "expo-router",
       "expo-secure-store",
@@ -17,7 +16,8 @@
           "recordAudioAndroid": false
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-status-bar"
     ],
     "experiments": {
       "typedRoutes": true
@@ -29,8 +29,7 @@
     "android": {
       "package": "com.nawarewards.app",
       "versionCode": 1,
-      "softwareKeyboardLayoutMode": "resize",
-      "edgeToEdgeEnabled": true
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "bundler": "metro",
