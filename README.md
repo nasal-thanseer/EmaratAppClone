@@ -17,7 +17,7 @@ An original Expo React Native loyalty app inspired by common premium rewards pat
 
 ## Run locally
 
-Prerequisites: Node.js 22.13+ (LTS) or Node.js 24.3+ and npm.
+Prerequisites: Node.js 22.13+ (22.x LTS) or Node.js 24.3+ (24.x) and npm.
 
 ```bash
 npm install
